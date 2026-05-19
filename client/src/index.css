@@ -386,3 +386,46 @@ a:hover { color: #FFF; }
   color: black;
   border-color: white;
 }
+
+@media (max-width: 1024px) {
+  .navbar .container {
+    gap: 12px;
+    padding: 0 16px;
+  }
+  
+  .search-bar {
+    width: 180px !important; 
+  }
+}
+
+@media (max-width: 768px) {
+  .navbar .container {
+    flex-direction: column;
+    gap: 16px;
+    padding: 12px;
+    align-items: center;
+  }
+
+  .nav-links {
+    width: 100%;
+    justify-content: center;
+    gap: 15px;
+  }
+
+  .navbar div[style*="display: flex"] {
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px !important;
+  }
+
+  .search-bar {
+    width: 100% !important;
+    min-width: 240px;
+  }
+  
+  .btn {
+    padding: 0.5rem 0.8rem !important;
+    font-size: 0.85rem;
+  }
+}
