@@ -29,7 +29,10 @@ async function initDatabase() {
 initDatabase();
 
 app.use(cors({
-  origin: true,
+  origin: [
+    'https://se489-production.up.railway.app', 
+    'https://your-frontend-domain.vercel.app'  
+  ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
