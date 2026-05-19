@@ -113,7 +113,7 @@ const [darkMode, setDarkMode] = useState(() => {
         <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
           <div ref={searchRef} style={{ position: 'relative', zIndex: 1000 }}>
             <form onSubmit={handleSearch} style={{ position: 'relative' }}>
-              <input 
+            <input 
                 type="text" 
                 placeholder="Search masterpieces..." 
                 className="search-bar" 
@@ -123,8 +123,8 @@ const [darkMode, setDarkMode] = useState(() => {
                   setShowDropdown(true);
                 }}
                 onFocus={() => setShowDropdown(true)}
-                style={{ width: '260px', paddingRight: '40px' }}
-              />
+                style={{ paddingRight: '40px' }}
+            />
               <button type="submit" style={{ background: 'none', border: 'none', padding: 0 }}>
                 <Search size={18} style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', color: '#888', cursor: 'pointer' }} />
               </button>
