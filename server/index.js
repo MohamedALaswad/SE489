@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const http = require('http');
 const { WebSocketServer } = require('ws');
+const { PrismaClient } = require('@prisma/client');
 const authRoutes = require('./routes/auth');
 const productRoutes = require('./routes/product');
 const auctionRoutes = require('./routes/auction');
@@ -15,12 +16,25 @@ const { handleWebSocketConnection } = require('./websocket');
 const path = require('path');
 
 const app = express();
+const prisma = new PrismaClient();
+
+async function initDatabase() {
+  try {
+    await prisma.$connect();
+    console.log("Database connected successfully via Prisma.");
+  } catch (error) {
+    console.error("Database initialization connection error:", error);
+  }
+}
+initDatabase();
+
 app.use(cors({
-  origin: true, 
-  credentials: true, 
+  origin: true,
+  credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
+
 app.use(express.json());
 
 // Serve static files from uploads directory
