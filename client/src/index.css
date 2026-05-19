@@ -1,34 +1,31 @@
+
 :root {
-  --color-bg: #F8F9FA;       
-  --color-surface: #FFFFFF;    
-  --color-surface-light: rgba(241, 243, 245, 0.8);
-  --color-text: #495057;      
-  --color-text-title: #212529;  
+  --color-bg: #FAFAFA;        
+  --color-surface: #FFFFFF;   
+  --color-surface-light: rgba(255, 255, 255, 0.7);
+  --color-text: #4A4A4A;      
+  --color-text-title: #1A1A1A; 
   
-  --color-featured: #D32F2F; 
-  --color-directory: #F5A623;  
-  --color-recruitment: #0277BD;
-  --color-accent-gradient: linear-gradient(135deg, var(--color-directory), #FF5722);
+  --color-featured: #FF5252;   
+  --color-directory: #FF8A80; 
+  --color-recruitment: #4FC3F7; 
   
-  --glass-bg: rgba(0, 0, 0, 0.02);
-  --glass-border: rgba(0, 0, 0, 0.06);
-  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.08);
+  --color-accent-gradient: linear-gradient(135deg, #FF8A80, #FFB199);
+  
+  --glass-bg: rgba(0, 0, 0, 0.03);
+  --glass-border: rgba(0, 0, 0, 0.08);
+  --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
   
   --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   --transition-smooth: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-
-html.dark, body.dark, .dark {
-  --color-bg: #0B0C10;        
+html.dark, body.dark {
+  --color-bg: #0B0C10;     
   --color-surface: #1F2833;   
   --color-surface-light: rgba(31, 40, 51, 0.6);
-  --color-text: #C5C6C7;  
+  --color-text: #C5C6C7;   
   --color-text-title: #FFFFFF; 
-  --color-featured: #E53935; 
-  --color-directory: #FFB300; 
-  --color-recruitment: #0288D1; 
-  --color-accent-gradient: linear-gradient(135deg, var(--color-directory), #FF5722);
   
   --glass-bg: rgba(255, 255, 255, 0.03);
   --glass-border: rgba(255, 255, 255, 0.08);
@@ -37,11 +34,34 @@ html.dark, body.dark, .dark {
 
 body {
   margin: 0;
-  font-family: 'Outfit', sans-serif;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
   background-color: var(--color-bg);
   color: var(--color-text);
-  line-height: 1.6;
-  -webkit-font-smoothing: antialiased;
+  transition: background-color var(--transition-smooth), color var(--transition-smooth);
+}
+
+.nav-link, .brand-logo, .navbar {
+  color: var(--color-text-title) !important;
+  transition: color var(--transition-fast);
+}
+
+.nav-link:hover {
+  color: var(--color-directory) !important; 
+}
+
+.search-bar {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  color: var(--color-text-title) !important;
+  border-radius: 8px;
+  padding: 10px 16px;
+  outline: none;
+  transition: all var(--transition-fast);
+}
+
+.search-bar::placeholder {
+  color: var(--color-text);
+  opacity: 0.6;
 }
 
 h1, h2, h3, h4, h5, h6 {
