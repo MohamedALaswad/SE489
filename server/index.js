@@ -31,13 +31,13 @@ initDatabase();
 app.use(cors({
   origin: [
     'https://se489-production.up.railway.app', 
-    'https://your-frontend-domain.vercel.app'  
+    'https://se489-9kkjp0d4u-mohammed-alaswad.vercel.app',
+    'http://localhost:5173'
   ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
-
 app.use(express.json());
 
 // Serve static files from uploads directory
