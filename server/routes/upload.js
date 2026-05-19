@@ -23,8 +23,8 @@ router.post('/', upload.single('image'), (req, res) => {
   }
   
   // Create URL to access the uploaded file
-  const fileUrl = `http://localhost:3001/uploads/${req.file.filename}`;
-  
+const baseUrl = req.protocol + '://' + req.get('host');
+const fileUrl = `${baseUrl}/uploads/${req.file.filename}`;  
   res.json({ url: fileUrl });
 });
 
@@ -34,7 +34,8 @@ router.post('/multiple', upload.array('images', 5), (req, res) => {
     return res.status(400).json({ error: 'No files uploaded' });
   }
   
-  const fileUrls = req.files.map(file => `http://localhost:3001/uploads/${file.filename}`);
+const baseUrl = req.protocol + '://' + req.get('host');
+const fileUrls = req.files.map(file => `${baseUrl}/uploads/${file.filename}`);
   res.json({ urls: fileUrls });
 });
 
