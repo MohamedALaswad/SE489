@@ -1,7 +1,6 @@
 import { ShoppingCart, Search, Heart, User, LogOut, History, X, Tag, Sun, Moon } from 'lucide-react'
-  import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { useAuth } from '../context/AuthContext'
-
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 
 function Navbar() {
@@ -12,9 +11,9 @@ function Navbar() {
   const [showDropdown, setShowDropdown] = useState(false);
   const [searchHistory, setSearchHistory] = useState(JSON.parse(localStorage.getItem('globalSearchHistory') || '[]'));
   const searchRef = useRef(null);
-const [darkMode, setDarkMode] = useState(() => {
-
-      return localStorage.getItem('theme') !== 'light';
+  
+  const [darkMode, setDarkMode] = useState(() => {
+    return localStorage.getItem('theme') !== 'light';
   });
 
   useEffect(() => {
@@ -110,10 +109,10 @@ const [darkMode, setDarkMode] = useState(() => {
           <Link to="/auctions" className="nav-link">Live Auctions</Link>
         </div>
         
-        <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-          <div ref={searchRef} style={{ position: 'relative', zIndex: 1000 }}>
+        <div className="nav-actions">
+          <div ref={searchRef} className="search-container">
             <form onSubmit={handleSearch} style={{ position: 'relative' }}>
-            <input 
+              <input 
                 type="text" 
                 placeholder="Search masterpieces..." 
                 className="search-bar" 
@@ -123,37 +122,22 @@ const [darkMode, setDarkMode] = useState(() => {
                   setShowDropdown(true);
                 }}
                 onFocus={() => setShowDropdown(true)}
-                style={{ paddingRight: '40px' }}
-            />
+              />
               <button type="submit" style={{ background: 'none', border: 'none', padding: 0 }}>
-                <Search size={18} style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', color: '#888', cursor: 'pointer' }} />
+                <Search size={18} className="search-icon-btn" />
               </button>
             </form>
 
             {showDropdown && (suggestedCategories.length > 0 || historyToShow.length > 0) && (
-              <div style={{
-                position: 'absolute',
-                top: 'calc(100% + 8px)',
-                right: 0,
-                width: '280px',
-                background: 'rgba(30, 30, 35, 0.98)',
-                backdropFilter: 'blur(15px)',
-                border: '1px solid rgba(255,255,255,0.1)',
-                borderRadius: '12px',
-                padding: '8px 0',
-                boxShadow: '0 8px 24px rgba(0,0,0,0.4)',
-                textAlign: 'left'
-              }}>
+              <div className="search-dropdown">
                 {suggestedCategories.length > 0 && (
                   <div>
-                    <div style={{ padding: '4px 14px', fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--color-directory)', opacity: 0.8 }}>Jump to Category</div>
+                    <div className="dropdown-section-title">Jump to Category</div>
                     {suggestedCategories.map(cat => (
                       <div 
                         key={cat} 
                         onClick={() => selectCategory(cat)}
-                        style={{ padding: '8px 14px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px', color: 'white', transition: 'background 0.2s', fontSize: '0.9rem' }}
-                        onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}
-                        onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                        className="dropdown-item"
                       >
                         <Tag size={14} style={{ color: '#888' }} />
                         <span>{cat}</span>
@@ -162,18 +146,16 @@ const [darkMode, setDarkMode] = useState(() => {
                   </div>
                 )}
 
-                {suggestedCategories.length > 0 && historyToShow.length > 0 && <div style={{ height: '1px', background: 'rgba(255,255,255,0.05)', margin: '6px 0' }}></div>}
+                {suggestedCategories.length > 0 && historyToShow.length > 0 && <div className="dropdown-divider"></div>}
 
                 {historyToShow.length > 0 && (
                   <div>
-                    <div style={{ padding: '4px 14px', fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px', color: '#888' }}>Recent</div>
+                    <div className="dropdown-section-title" style={{ color: '#888' }}>Recent</div>
                     {historyToShow.map((term, i) => (
                       <div 
                         key={i} 
                         onClick={() => selectHistory(term)}
-                        style={{ padding: '8px 14px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: 'white', transition: 'background 0.2s', fontSize: '0.9rem' }}
-                        onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}
-                        onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                        className="dropdown-item recent-item"
                       >
                         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                           <History size={14} style={{ color: '#666' }} />
@@ -181,9 +163,7 @@ const [darkMode, setDarkMode] = useState(() => {
                         </div>
                         <button 
                           onClick={(e) => removeFromHistory(e, term)}
-                          style={{ background: 'none', border: 'none', padding: '2px', cursor: 'pointer', color: '#666', display: 'flex', alignItems: 'center' }}
-                          onMouseEnter={(e) => e.currentTarget.style.color = 'white'}
-                          onMouseLeave={(e) => e.currentTarget.style.color = '#666'}
+                          className="remove-history-btn"
                         >
                           <X size={12} />
                         </button>
@@ -197,49 +177,31 @@ const [darkMode, setDarkMode] = useState(() => {
 
           <button 
             onClick={() => setDarkMode(!darkMode)}
-            style={{
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              color: 'var(--color-text)',
-              display: 'flex',
-              alignItems: 'center',
-              padding: '8px',
-              borderRadius: '50%',
-              transition: 'background var(--transition-fast), color var(--transition-fast)'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = 'var(--glass-bg)';
-              e.currentTarget.style.color = 'var(--color-text-title)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = 'none';
-              e.currentTarget.style.color = 'var(--color-text)';
-            }}
+            className="theme-toggle-btn"
             title={darkMode ? "Switch to Light Mode" : "Switch to Night Mode"}
           >
             {darkMode ? <Sun size={22} /> : <Moon size={22} />}
           </button>
           
-          <Link to="/wishlist" style={{ color: 'var(--color-text)', position: 'relative' }}>
+          <Link to="/wishlist" className="nav-icon-link">
             <Heart size={24} />
           </Link>
           
-          <Link to="/cart" style={{ color: 'var(--color-text)', position: 'relative' }}>
+          <Link to="/cart" className="nav-icon-link">
             <ShoppingCart size={24} />
           </Link>
 
           {user ? (
             <>
-              <Link to={getDashboardLink()} className="btn btn-outline" style={{ padding: '0.5rem 1rem' }}>
+              <Link to={getDashboardLink()} className="btn btn-outline dashboard-btn">
                 <User size={18} /> Dashboard
               </Link>
-              <button onClick={handleLogout} className="btn" style={{ padding: '0.5rem 1rem', background: 'rgba(229, 57, 53, 0.1)', color: 'var(--color-featured)' }}>
+              <button onClick={handleLogout} className="btn logout-btn">
                 <LogOut size={18} />
               </button>
             </>
           ) : (
-            <Link to="/login" className="btn btn-primary" style={{ padding: '0.5rem 1.5rem' }}>
+            <Link to="/login" className="btn btn-primary signin-btn">
               Sign In
             </Link>
           )}
