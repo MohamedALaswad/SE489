@@ -1,5 +1,5 @@
-import { ShoppingCart, Search, Heart, User, LogOut, History, X, Tag } from 'lucide-react'
-import React, { useState, useRef, useEffect } from 'react'
+import { ShoppingCart, Search, Heart, User, LogOut, History, X, Tag, Sun, Moon } from 'lucide-react'
+  import React, { useState, useRef, useEffect } from 'react'
 import { useAuth } from '../context/AuthContext'
 
 import { Link, useNavigate, useLocation } from 'react-router-dom'
