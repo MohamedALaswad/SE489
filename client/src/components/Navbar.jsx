@@ -12,7 +12,23 @@ function Navbar() {
   const [showDropdown, setShowDropdown] = useState(false);
   const [searchHistory, setSearchHistory] = useState(JSON.parse(localStorage.getItem('globalSearchHistory') || '[]'));
   const searchRef = useRef(null);
+const [darkMode, setDarkMode] = useState(() => {
 
+      return localStorage.getItem('theme') !== 'light';
+  });
+
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add('dark');
+      document.body.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      document.body.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    }
+  }, [darkMode]);
+  
   useEffect(() => {
     setSearchQuery('');
     setShowDropdown(false);
@@ -178,6 +194,32 @@ function Navbar() {
               </div>
             )}
           </div>
+
+          <button 
+            onClick={() => setDarkMode(!darkMode)}
+            style={{
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              color: 'var(--color-text)',
+              display: 'flex',
+              alignItems: 'center',
+              padding: '8px',
+              borderRadius: '50%',
+              transition: 'background var(--transition-fast), color var(--transition-fast)'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = 'var(--glass-bg)';
+              e.currentTarget.style.color = 'var(--color-text-title)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'none';
+              e.currentTarget.style.color = 'var(--color-text)';
+            }}
+            title={darkMode ? "Switch to Light Mode" : "Switch to Night Mode"}
+          >
+            {darkMode ? <Sun size={22} /> : <Moon size={22} />}
+          </button>
           
           <Link to="/wishlist" style={{ color: 'var(--color-text)', position: 'relative' }}>
             <Heart size={24} />
