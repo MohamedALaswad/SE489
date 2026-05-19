@@ -415,6 +415,7 @@ a:hover { color: var(--color-text-title); }
   .navbar {
     padding: 14px 0 !important;
     height: auto !important; 
+    display: block !important;
   }
 
   .navbar .container {
