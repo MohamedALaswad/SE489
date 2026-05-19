@@ -1,23 +1,38 @@
 :root {
-  /* Premium Dark Mode Palette */
-  --color-bg: #0B0C10; /* Very dark blue/black */
-  --color-surface: #1F2833;
-  --color-surface-light: rgba(31, 40, 51, 0.6);
-  --color-text: #C5C6C7;
-  --color-text-title: #FFFFFF;
+  --color-bg: #F8F9FA;       
+  --color-surface: #FFFFFF;    
+  --color-surface-light: rgba(241, 243, 245, 0.8);
+  --color-text: #495057;      
+  --color-text-title: #212529;  
   
-  /* Brand Accents based on requirements */
-  --color-featured: #E53935; /* Deep Red */
-  --color-directory: #FFB300; /* Golden-Orange */
-  --color-recruitment: #0288D1; /* Cerulean Blue */
+  --color-featured: #D32F2F; 
+  --color-directory: #F5A623;  
+  --color-recruitment: #0277BD;
+  --color-accent-gradient: linear-gradient(135deg, var(--color-directory), #FF5722);
+  
+  --glass-bg: rgba(0, 0, 0, 0.02);
+  --glass-border: rgba(0, 0, 0, 0.06);
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.08);
+  
+  --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-smooth: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+
+html.dark, body.dark, .dark {
+  --color-bg: #0B0C10;        
+  --color-surface: #1F2833;   
+  --color-surface-light: rgba(31, 40, 51, 0.6);
+  --color-text: #C5C6C7;  
+  --color-text-title: #FFFFFF; 
+  --color-featured: #E53935; 
+  --color-directory: #FFB300; 
+  --color-recruitment: #0288D1; 
   --color-accent-gradient: linear-gradient(135deg, var(--color-directory), #FF5722);
   
   --glass-bg: rgba(255, 255, 255, 0.03);
   --glass-border: rgba(255, 255, 255, 0.08);
   --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-  
-  --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-smooth: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 body {
