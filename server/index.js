@@ -28,16 +28,27 @@ async function initDatabase() {
 }
 initDatabase();
 
+const allowedOrigins = [
+  'https://se489-production.up.railway.app',
+  'https://se489.vercel.app',
+  'http://localhost:5173'
+];
+
 app.use(cors({
-  origin: [
-    'https://se489-production.up.railway.app', 
-    'https://se-489-t07ashvn1-mohammed-alaswad.vercel.app',
-    'http://localhost:5173'
-  ],
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.includes(origin) || origin.endsWith('.vercel.app')) {
+      return callback(null, true);
+    }
+    
+    return callback(new Error('Not allowed by CORS'));
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
+
 app.use(express.json());
 
 // Serve static files from uploads directory
