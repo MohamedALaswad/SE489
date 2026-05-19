@@ -31,7 +31,7 @@ initDatabase();
 app.use(cors({
   origin: [
     'https://se489-production.up.railway.app', 
-    'https://se489-9kkjp0d4u-mohammed-alaswad.vercel.app',
+    'https://se489.vercel.app',
     'http://localhost:5173'
   ],
   credentials: true,
