@@ -407,45 +407,63 @@ a:hover { color: #FFF; }
   border-color: white;
 }
 
+
 @media (max-width: 1024px) {
   .navbar .container {
-    gap: 12px;
-    padding: 0 16px;
+    gap: 12px !important;
+    padding: 0 16px !important;
   }
   
   .search-bar {
-    width: 180px !important; 
+    width: 160px !important;
   }
 }
 
 @media (max-width: 768px) {
+  .navbar {
+    padding: 12px 0 !important;
+    height: auto !important; 
+  }
+
   .navbar .container {
-    flex-direction: column;
-    gap: 16px;
-    padding: 12px;
-    align-items: center;
+    flex-direction: column !important; 
+    gap: 16px !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
   }
 
   .nav-links {
-    width: 100%;
-    justify-content: center;
-    gap: 15px;
+    width: 100% !important;
+    justify-content: center !important;
+    gap: 12px !important;
+    flex-wrap: wrap !important; 
   }
 
-  .navbar div[style*="display: flex"] {
-    width: 100%;
-    justify-content: center;
-    flex-wrap: wrap;
+  .nav-actions {
+    width: 100% !important;
+    flex-direction: row !important; 
+    justify-content: center !important;
+    flex-wrap: wrap !important;
     gap: 12px !important;
+  }
+
+  .nav-actions > div:first-child {
+    width: 100% !important; 
+    order: -1; 
   }
 
   .search-bar {
     width: 100% !important;
-    min-width: 240px;
+    min-width: 100% !important;
+    box-sizing: border-box !important;
   }
   
   .btn {
     padding: 0.5rem 0.8rem !important;
-    font-size: 0.85rem;
+    font-size: 0.8rem !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 4px !important;
   }
 }
