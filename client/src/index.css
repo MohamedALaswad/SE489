@@ -21,6 +21,18 @@
   
   --nav-blur-bg: rgba(250, 250, 250, 0.8); 
 }
+html, body, #root {
+  width: 100% !important;
+  max-width: 100vw !important;
+  overflow-x: hidden !important; 
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+* {
+  box-sizing: border-box;
+}
 
 html.dark, body.dark {
   --color-bg: #0B0C10;     
