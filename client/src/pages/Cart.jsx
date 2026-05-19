@@ -14,7 +14,7 @@ function Cart() {
   }, [user]);
 
   const fetchCart = () => {
-    fetch(`http://localhost:3001/api/cart/${user.userId}`)
+fetch(`https://se489-production.up.railway.app/api/cart/${user.userId}`)
       .then(res => res.json())
       .then(data => setCartItems(data.items || []))
       .catch(console.error);
@@ -22,7 +22,7 @@ function Cart() {
 
   const removeItem = async (productId) => {
     try {
-      const response = await fetch(`http://localhost:3001/api/cart/${user.userId}/remove/${productId}`, {
+      const response = await fetch(`https://se489-production.up.railway.app/api/cart/${user.userId}/remove/${productId}`, {
         method: 'DELETE'
       });
       if (response.ok) fetchCart();
@@ -33,7 +33,7 @@ function Cart() {
 
   const handleCheckout = async () => {
     try {
-      const response = await fetch(`http://localhost:3001/api/orders/checkout`, {
+      const response = await ffetch(`https://se489-production.up.railway.app/api/orders/checkout`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId: user.userId })

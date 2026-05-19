@@ -7,8 +7,7 @@ function Home() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('http://localhost:3001/api/artisans/top')
-      .then(res => res.json())
+fetch('https://se489-production.up.railway.app/api/artisans/top')      .then(res => res.json())
       .then(data => {
         setTopArtisans(data);
         setLoading(false);

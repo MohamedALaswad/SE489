@@ -18,7 +18,7 @@ function ArtisanDashboard() {
 
   const fetchDashboardData = () => {
     if (!user) return;
-    fetch(`http://localhost:3001/api/dashboard/artisan/${user.userId}`)
+fetch('https://se489-production.up.railway.app/api/products')
       .then(res => res.json())
       .then(setData)
       .catch(console.error);
@@ -38,7 +38,7 @@ function ArtisanDashboard() {
     files.forEach(file => form.append('images', file));
 
     try {
-      const response = await fetch('http://localhost:3001/api/upload/multiple', {
+      const response = await fetch('https://se489-production.up.railway.app/api/upload/multiple', {
         method: 'POST',
         body: form
       });
@@ -58,7 +58,7 @@ function ArtisanDashboard() {
   const handleCreateProduct = async (e) => {
     e.preventDefault();
     try {
-      let endpoint = 'http://localhost:3001/api/products';
+      let endpoint ='https://se489-production.up.railway.app/api/products';
       let payload = {
         name: newProduct.name,
         description: newProduct.description,
@@ -70,7 +70,7 @@ function ArtisanDashboard() {
       };
 
       if (listingType === 'auction') {
-        endpoint = 'http://localhost:3001/api/auctions';
+        endpoint = 'https://se489-production.up.railway.app/api/products';
         payload = {
           title: newProduct.name,
           description: newProduct.description,
@@ -351,7 +351,7 @@ function ArtisanDashboard() {
                       onChange={async (e) => {
                         const newStatus = e.target.value;
                         try {
-                          const res = await fetch(`http://localhost:3001/api/orders/${sale.order.id}/status`, {
+                          const res = await fetch(`https://se489-production.up.railway.app/api/orders/${sale.order.id}/status`, {
                             method: 'PUT',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({ status: newStatus })

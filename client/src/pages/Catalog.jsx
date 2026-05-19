@@ -77,7 +77,7 @@ function Catalog() {
 
   useEffect(() => {
     if (user) {
-      fetch(`http://localhost:3001/api/wishlist/${user.userId}`)
+fetch(`https://se489-production.up.railway.app/api/wishlist/${user.userId}`)
         .then(res => res.json())
         .then(data => setWishlist(data.map(item => item.productId)))
         .catch(err => console.error(err))
@@ -87,7 +87,7 @@ function Catalog() {
   }, [user])
 
   useEffect(() => {
-    let url = 'http://localhost:3001/api/products'
+    let url = 'https://se489-production.up.railway.app/api/products'
     const params = new URLSearchParams()
     
     if (category) params.append('category', category)
@@ -110,8 +110,7 @@ function Catalog() {
       return;
     }
     try {
-      const response = await fetch(`http://localhost:3001/api/cart/${user.userId}/add`, {
-        method: 'POST',
+const response = await fetch(`https://se489-production.up.railway.app/api/cart/${user.userId}/add`, {        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ productId, quantity: 1 })
       });
@@ -135,15 +134,13 @@ function Catalog() {
     const isWishlisted = wishlist.includes(productId);
     try {
       if (isWishlisted) {
-        const response = await fetch(`http://localhost:3001/api/wishlist/${user.userId}/${productId}`, {
-          method: 'DELETE',
+const response = await fetch(`https://se489-production.up.railway.app/api/wishlist/${user.userId}/${productId}`, {          method: 'DELETE',
         });
         if (response.ok) {
           setWishlist(prev => prev.filter(id => id !== productId));
         }
       } else {
-        const response = await fetch(`http://localhost:3001/api/wishlist`, {
-          method: 'POST',
+const response = await fetch(`https://se489-production.up.railway.app/api/wishlist`, {          method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ userId: user.userId, productId })
         });

@@ -23,8 +23,7 @@ function ProductDetails() {
     localStorage.setItem(`viewed_${id}`, 'true');
 
     // Fetch product details (backend increments views)
-    fetch(`http://localhost:3001/api/products/${id}`)
-      .then(res => {
+fetch(`https://se489-production.up.railway.app/api/products/${id}`)      .then(res => {
         if (!res.ok) throw new Error('Product not found');
         return res.json();
       })
@@ -40,8 +39,7 @@ function ProductDetails() {
       });
 
     if (user) {
-      fetch(`http://localhost:3001/api/wishlist/${user.userId}`)
-        .then(res => res.json())
+fetch(`https://se489-production.up.railway.app/api/wishlist/${user.userId}`)        .then(res => res.json())
         .then(data => setWishlist(data.map(item => item.productId)))
         .catch(console.error);
     }
@@ -53,8 +51,7 @@ function ProductDetails() {
       return;
     }
     try {
-      const response = await fetch(`http://localhost:3001/api/cart/${user.userId}/add`, {
-        method: 'POST',
+const response = await fetch(`https://se489-production.up.railway.app/api/cart/${user.userId}/add`, {        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ productId: product.id, quantity: 1 })
       });
@@ -77,10 +74,10 @@ function ProductDetails() {
     const isWishlisted = wishlist.includes(product.id);
     try {
       if (isWishlisted) {
-        const response = await fetch(`http://localhost:3001/api/wishlist/${user.userId}/${product.id}`, { method: 'DELETE' });
+     const response = await fetch(`https://se489-production.up.railway.app/api/wishlist/${user.userId}/${product.id}`, { method: 'DELETE' });
         if (response.ok) setWishlist(prev => prev.filter(wid => wid !== product.id));
       } else {
-        const response = await fetch(`http://localhost:3001/api/wishlist`, {
+        const response = await fetch(`https://se489-production.up.railway.app/api/wishlist`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ userId: user.userId, productId: product.id })

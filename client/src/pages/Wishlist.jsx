@@ -15,8 +15,7 @@ function Wishlist() {
   }, [user])
 
   const fetchWishlist = () => {
-    fetch(`http://localhost:3001/api/wishlist/${user.userId}`)
-      .then(res => res.json())
+fetch(`https://se489-production.up.railway.app/api/wishlist/${user.userId}`)      .then(res => res.json())
       .then(data => {
         setWishlistItems(data)
         setLoading(false)
@@ -29,8 +28,7 @@ function Wishlist() {
 
   const handleRemove = async (productId) => {
     try {
-      const response = await fetch(`http://localhost:3001/api/wishlist/${user.userId}/${productId}`, {
-        method: 'DELETE',
+const response = await fetch(`https://se489-production.up.railway.app/api/wishlist/${user.userId}/${productId}`, {        method: 'DELETE',
       })
       if (response.ok) {
         setWishlistItems(prev => prev.filter(item => item.productId !== productId))
@@ -42,8 +40,7 @@ function Wishlist() {
 
   const handleAddToCart = async (productId) => {
     try {
-      const response = await fetch(`http://localhost:3001/api/cart/${user.userId}/add`, {
-        method: 'POST',
+const response = await fetch(`https://se489-production.up.railway.app/api/cart/${user.userId}/add`, {        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ productId, quantity: 1 })
       });

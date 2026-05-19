@@ -135,7 +135,7 @@ function AuctionHouse() {
     localStorage.setItem('auctionSearchHistory', JSON.stringify(updated));
   }
   useEffect(() => {
-    let url = 'http://localhost:3001/api/auctions'
+    let url = 'https://se489-production.up.railway.app/api/auctions'
     if (searchQuery) {
       url += `?search=${encodeURIComponent(searchQuery)}`
     }
@@ -146,7 +146,7 @@ function AuctionHouse() {
   }, [searchQuery])
 
   useEffect(() => {
-    wsRef.current = new WebSocket('ws://localhost:3001')
+    wsRef.current = new WebSocket('wss://se489-production.up.railway.app')
 
     wsRef.current.onopen = () => console.log('Connected to WebSocket server')
 

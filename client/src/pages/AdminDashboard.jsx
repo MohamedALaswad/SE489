@@ -12,7 +12,7 @@ function AdminDashboard() {
   }, []);
 
   const fetchAdminData = () => {
-    fetch('http://localhost:3001/api/dashboard/admin')
+   fetch('https://se489-production.up.railway.app/api/products')
       .then(res => res.json())
       .then(data => {
         setMetrics({
@@ -27,7 +27,7 @@ function AdminDashboard() {
 
   const handleToggleSuspend = async (userId) => {
     try {
-      const res = await fetch(`http://localhost:3001/api/dashboard/admin/toggle-suspend/${userId}`, {
+      const res = await fetch(`https://se489-production.up.railway.app/api/dashboard/admin/toggle-suspend/${userId}`, {
         method: 'POST'
       });
       if (res.ok) {

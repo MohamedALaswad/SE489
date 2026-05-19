@@ -12,13 +12,13 @@ function CustomerDashboard() {
   useEffect(() => {
     if (user) {
       // Fetch orders
-      fetch(`http://localhost:3001/api/orders/user/${user.userId}`)
+     fetch(`https://se489-production.up.railway.app/api/orders/user/${user.userId}`)
         .then(res => res.json())
         .then(setOrders)
         .catch(console.error);
 
       // Fetch bids
-      fetch(`http://localhost:3001/api/dashboard/customer/${user.userId}/bids`)
+      fetch(`https://se489-production.up.railway.app/api/dashboard/customer/${user.userId}/bids`)
         .then(res => res.json())
         .then(setBids)
         .catch(console.error);

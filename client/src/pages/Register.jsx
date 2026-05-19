@@ -32,8 +32,7 @@ function Register() {
     form.append('image', file);
 
     try {
-      const response = await fetch('http://localhost:3001/api/upload', {
-        method: 'POST',
+const response = await fetch('https://se489-production.up.railway.app/api/upload', {        method: 'POST',
         body: form
       });
       const data = await response.json();
@@ -60,8 +59,7 @@ function Register() {
     }
 
     try {
-      const response = await fetch('http://localhost:3001/api/auth/register', {
-        method: 'POST',
+const response = await fetch('https://se489-production.up.railway.app/api/auth/register', {        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
       });

@@ -32,7 +32,7 @@ function AuctionDetails() {
     // Record view in local storage for the catalog eye icon
     localStorage.setItem(`viewed_auction_${id}`, 'true');
 
-    fetch(`http://localhost:3001/api/auctions/${id}`)
+    fetch(`https://se489-production.up.railway.app/api/auctions/${id}`)
       .then(res => {
         if (!res.ok) throw new Error('Auction not found');
         return res.json();
@@ -51,7 +51,7 @@ function AuctionDetails() {
       });
 
     // WebSocket connection for live bids
-    wsRef.current = new WebSocket('ws://localhost:3001');
+    wsRef.current = new WebSocket('wss://se489-production.up.railway.app');
     wsRef.current.onmessage = (event) => {
       const data = JSON.parse(event.data);
       if (data.type === 'UPDATE' && data.auctionId === id) {

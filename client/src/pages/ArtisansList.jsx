@@ -8,7 +8,7 @@ function ArtisansList() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch('http://localhost:3001/api/artisans')
+    fetch('https://se489-production.up.railway.app/api/artisans')
       .then(res => res.json())
       .then(data => {
         setArtisans(data);
