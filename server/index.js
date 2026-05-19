@@ -18,15 +18,6 @@ const path = require('path');
 const app = express();
 const prisma = new PrismaClient();
 
-async function initDatabase() {
-  try {
-    await prisma.$connect();
-    console.log("Database connected successfully via Prisma.");
-  } catch (error) {
-    console.error("Database initialization connection error:", error);
-  }
-}
-initDatabase();
 
 const allowedOrigins = [
   'https://se489-production.up.railway.app',
@@ -38,7 +29,9 @@ app.use(cors({
   origin: function (origin, callback) {
     if (!origin) return callback(null, true);
     
-    if (allowedOrigins.includes(origin) || origin.endsWith('.vercel.app')) {
+    const cleanOrigin = origin.replace(/\/$/, "");
+    
+    if (allowedOrigins.includes(cleanOrigin) || cleanOrigin.endsWith('.vercel.app')) {
       return callback(null, true);
     }
     
@@ -49,12 +42,21 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
-app.use(express.json());
 
-// Serve static files from uploads directory
+app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Routes
+
+async function initDatabase() {
+  try {
+    await prisma.$connect();
+    console.log("Database connected successfully via Prisma.");
+  } catch (error) {
+    console.error("Database initialization connection error:", error);
+  }
+}
+initDatabase();
+
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/auctions', auctionRoutes);
@@ -65,12 +67,12 @@ app.use('/api/cart', cartRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/artisans', artisanRoutes);
 
+
 const server = http.createServer(app);
 const wss = new WebSocketServer({ server });
-
 handleWebSocketConnection(wss);
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 8080;
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
