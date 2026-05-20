@@ -5,13 +5,15 @@ const prisma = new PrismaClient();
 
 router.get('/', async (req, res) => {
   try {
-    const { category, search } = req.query;
+    const { category, search, artisanId } = req.query;
     const where = {};
+    
     if (category) where.category = category;
-
+    if (artisanId) where.artisanId = artisanId; 
     let products = await prisma.product.findMany({
       where,
-      include: { artisan: { select: { name: true, profile: true } } }
+      include: { artisan: { select: { name: true, profile: true } } },
+      orderBy: { createdAt: 'desc' } 
     });
 
     if (search) {
@@ -22,6 +24,20 @@ router.get('/', async (req, res) => {
       );
     }
 
+    res.json(products);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.get('/artisan/:artisanId', async (req, res) => {
+  try {
+    const { artisanId } = req.params;
+    const products = await prisma.product.findMany({
+      where: { artisanId: artisanId },
+      include: { artisan: { select: { name: true, profile: true } } },
+      orderBy: { createdAt: 'desc' }
+    });
     res.json(products);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -40,7 +56,7 @@ router.get('/:id', async (req, res) => {
     });
     res.json(product);
   } catch (error) {
-    if (error.code === 'P2025') return res.status(404).json({ error: 'المنتج غير موجود' });
+    if (error.code === 'P2025') return res.status(404).json({ error: 'Not found' });
     res.status(500).json({ error: error.message });
   }
 });
@@ -48,29 +64,22 @@ router.get('/:id', async (req, res) => {
 router.post('/', async (req, res) => {
   try {
     const { name, description, category, price, stock, images, artisanId } = req.body;
-
-    if (!artisanId) {
-      return res.status(400).json({ error: "معرّف الحرفي (artisanId) مطلوب لربط المنتج بالحساب!" });
-    }
-    if (!images || images.length === 0) {
-      return res.status(400).json({ error: "يجب إرفاق رابط صورة الرسمة المستلمة!" });
-    }
+    
+    const finalImages = typeof images === 'string' ? images : JSON.stringify(images || []);
 
     const product = await prisma.product.create({
       data: {
-        name: name || "رسمة رقمية جديدة",
-        description: description || "رسمة تم إنشاؤها عبر لوحة الرسم",
-        category: category || "Digital Art",
-        price: price ? parseFloat(price) : 0.0,
-        stock: stock ? parseInt(stock) : 1,
-        images: images,
-        artisanId: artisanId 
+        name,
+        description,
+        category,
+        price: parseFloat(price),
+        stock: parseInt(stock),
+        images: finalImages,
+        artisanId
       }
     });
-
-    res.status(201).json({ message: "تم حفظ الرسمة كمنتج بنجاح", product });
+    res.status(201).json(product);
   } catch (error) {
-    console.error("Error creating product from canvas:", error);
     res.status(500).json({ error: error.message });
   }
 });
