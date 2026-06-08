@@ -3,7 +3,6 @@ const router = express.Router();
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
-// This should ideally be protected with middleware
 router.post('/checkout', async (req, res) => {
   try {
     const { userId } = req.body;
@@ -40,7 +39,6 @@ router.post('/checkout', async (req, res) => {
         }
       });
 
-      // Empty the cart
       await tx.cartItem.deleteMany({
         where: { cartId: cart.id }
       });
@@ -48,7 +46,6 @@ router.post('/checkout', async (req, res) => {
       return newOrder;
     });
 
-    // MOCK PDF Invoicing and Email Sending
     console.log(`[EMAIL MOCK] Sending order confirmation to User ${userId} for Order ${orderId}`);
     console.log(`[PDF MOCK] Generating tax invoice PDF for Order ${orderId} in /server/invoices`);
 
@@ -76,11 +73,13 @@ router.put('/:id/status', async (req, res) => {
     if (!['PENDING', 'SHIPPED', 'DELIVERED'].includes(status)) {
       return res.status(400).json({ error: 'Invalid status' });
     }
-    const order = await prisma.order.update({
+
+    const updatedOrder = await prisma.order.update({
       where: { id: req.params.id },
       data: { status }
     });
-    res.json(order);
+
+    res.json(updatedOrder);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
