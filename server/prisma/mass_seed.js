@@ -3,9 +3,21 @@ const bcrypt = require('bcrypt');
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log('Starting optimized database seeding...');
-  const tables = [prisma.review, prisma.orderItem, prisma.order, prisma.bid, prisma.auction, prisma.cartItem, prisma.cart, prisma.wishlist, prisma.product, prisma.profile, prisma.user];
-  for (const table of tables) await table.deleteMany();
+  console.log('Starting optimized database seeding with strict constraint handling...');
+
+  await prisma.review.deleteMany({});
+  await prisma.orderItem.deleteMany({});
+  await prisma.order.deleteMany({});
+  await prisma.bid.deleteMany({});
+  await prisma.auction.deleteMany({});
+  await prisma.cartItem.deleteMany({});
+  await prisma.cart.deleteMany({});
+  await prisma.wishlist.deleteMany({});
+  await prisma.product.deleteMany({});
+  await prisma.profile.deleteMany({});
+  await prisma.user.deleteMany({});
+
+  console.log('Database cleared successfully!');
 
   const passwordHash = await bcrypt.hash('password123', 10);
   const categories = ['painting', 'jewellery', 'pottery', 'textiles'];
@@ -15,7 +27,6 @@ async function main() {
   const artisans = await Promise.all(Array.from({ length: 50 }, (_, i) => prisma.user.create({
     data: { email: `artisan${i+1}@coop.com`, passwordHash, role: 'ARTISAN', name: `Artisan ${i+1}`, profile: { create: { shopName: `Shop ${i+1}`, bio: `Handmade crafts bio for artisan ${i+1}`, avatarUrl: `/avatars/artisan${i+1}.png` } } }
   })));
-
   const customers = await Promise.all(Array.from({ length: 50 }, (_, i) => prisma.user.create({ data: { email: `customer${i+1}@coop.com`, passwordHash, role: 'CUSTOMER', name: `Customer ${i+1}` } })));
 
   const products = await Promise.all(Array.from({ length: 100 }, (_, i) => prisma.product.create({
@@ -24,9 +35,10 @@ async function main() {
 
   const auctions = await Promise.all(Array.from({ length: 15 }, (_, i) => {
     const isUpcoming = i === 12 || i === 13;
+    const startPrice = parseFloat((50 + Math.random() * 150).toFixed(2));
     return prisma.auction.create({
       data: {
-        title: `Masterpiece Artwork Auction #${i+1}`, description: `Exclusive bidding for rare piece #${i+1}`, category: categories[i % 4], startingPrice: parseFloat((50 + Math.random() * 150).toFixed(2)), currentBid: parseFloat((50 + Math.random() * 150).toFixed(2)),
+        title: `Masterpiece Artwork Auction #${i+1}`, description: `Exclusive bidding for rare piece #${i+1}`, category: categories[i % 4], startingPrice: startPrice, currentBid: startPrice,
         status: isUpcoming ? 'UPCOMING' : 'ACTIVE', startTime: new Date(Date.now() + (isUpcoming ? 24 : -1) * 3600000), endTime: new Date(Date.now() + (isUpcoming ? 48 : 4) * 3600000), artisanId: artisans[(i + 5) % 50].id, images: JSON.stringify([artImages[(i + 2) % 4]])
       }
     });
@@ -41,8 +53,9 @@ async function main() {
   }
 
   for (let i = 1; i <= 50; i++) {
+    const p = products[i % 100];
     await prisma.order.create({
-      data: { id: `COOP-2024-${Math.floor(10000 + Math.random() * 90000)}`, total: products[i % 100].price, status: ['PENDING', 'SHIPPED', 'DELIVERED'][i % 3], userId: customers[i % 50].id, items: { create: { productId: products[i % 100].id, quantity: 1, priceAtBuy: products[i % 100].price } } }
+      data: { id: `COOP-2024-${Math.floor(10000 + Math.random() * 90000)}`, total: p.price, status: ['PENDING', 'SHIPPED', 'DELIVERED'][i % 3], userId: customers[i % 50].id, items: { create: { productId: p.id, quantity: 1, priceAtBuy: p.price } } }
     });
   }
 
@@ -50,7 +63,7 @@ async function main() {
     await prisma.review.create({ data: { rating: Math.floor(Math.random() * 2) + 4, comment: `Amazing quality and detail on item #${i}`, productId: products[i % 100].id, userId: customers[i % 50].id } });
   }
 
-  console.log('Massive database seeding completed successfully in ~50 lines!');
+  console.log('Database seeding completed successfully and safely!');
 }
 
 main().catch(console.error).finally(() => prisma.$disconnect());
