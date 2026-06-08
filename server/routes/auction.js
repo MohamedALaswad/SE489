@@ -3,6 +3,7 @@ const router = express.Router();
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
+// 1. جلب جميع المزادات النشطة (مصلح ليفك مصفوفة الصور)
 router.get('/', async (req, res) => {
   try {
     const { search } = req.query;
@@ -22,25 +23,59 @@ router.get('/', async (req, res) => {
       );
     }
 
-    res.json(auctions);
+    // تصليح حقل الصور لجميع المزادات قبل إرسالها للفرونت إند
+    const formattedAuctions = auctions.map(auction => {
+      let parsedImages = [];
+      try {
+        parsedImages = JSON.parse(auction.images);
+      } catch (e) {
+        parsedImages = auction.images ? [auction.images] : [];
+      }
+      return {
+        ...auction,
+        images: parsedImages // الحين صار مصفوفة حقيقية [url, url]
+      };
+    });
+
+    res.json(formattedAuctions);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
+// 2. جلب تفاصيل مزاد محدد بـ ID (مصلح ليفك مصفوفة الصور)
 router.get('/:id', async (req, res) => {
   try {
     const auction = await prisma.auction.findUnique({
       where: { id: req.params.id },
-      include: { artisan: { select: { name: true, email: true, profile: true } }, bids: { include: { user: { select: { name: true } } }, orderBy: { amount: 'desc' } } }
+      include: { 
+        artisan: { select: { name: true, email: true, profile: true } }, 
+        bids: { include: { user: { select: { name: true } } }, orderBy: { amount: 'desc' } } 
+      }
     });
+    
     if (!auction) return res.status(404).json({ error: 'Not found' });
-    res.json(auction);
+
+    // تصليح حقل الصور للمزاد الفردي
+    let parsedImages = [];
+    try {
+      parsedImages = JSON.parse(auction.images);
+    } catch (e) {
+      parsedImages = auction.images ? [auction.images] : [];
+    }
+
+    const formattedAuction = {
+      ...auction,
+      images: parsedImages
+    };
+
+    res.json(formattedAuction);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
+// 3. إنشاء مزاد جديد (سليم كما هو)
 router.post('/', async (req, res) => {
   try {
     const { title, description, category, startingPrice, durationHours, artisanId, images } = req.body;
