@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
+
 router.get('/', async (req, res) => {
   try {
     const { search } = req.query;
@@ -21,17 +22,14 @@ router.get('/', async (req, res) => {
       );
     }
 
-    const formattedAuctions = auctions.map(auction => {
+    const formattedAuctions = auctions.map(a => {
       let parsedImages = [];
-      try {
-        parsedImages = JSON.parse(auction.images);
-      } catch (e) {
-        parsedImages = auction.images ? [auction.images] : [];
+      try { 
+        parsedImages = JSON.parse(a.images); 
+      } catch (e) { 
+        parsedImages = a.images ? [a.images] : []; 
       }
-      return {
-        ...auction,
-        images: parsedImages 
-      };
+      return { ...a, images: parsedImages };
     });
 
     res.json(formattedAuctions);
@@ -40,39 +38,26 @@ router.get('/', async (req, res) => {
   }
 });
 
-router.get('/', async (req, res) => {
+router.get('/:id', async (req, res) => {
   try {
-    const { search } = req.query;
-
-    let auctions = await prisma.auction.findMany({
-      where: { status: { not: 'CLOSED' } },
-      include: { artisan: { select: { name: true, profile: true } } },
-      orderBy: { endTime: 'asc' }
+    const auction = await prisma.auction.findUnique({
+      where: { id: req.params.id },
+      include: { 
+        artisan: { select: { name: true, email: true, profile: true } }, 
+        bids: { include: { user: { select: { name: true } } }, orderBy: { amount: 'desc' } } 
+      }
     });
-
-    if (search) {
-      const lowerSearch = search.toLowerCase();
-      auctions = auctions.filter(a => 
-        a.title.toLowerCase().includes(lowerSearch) || 
-        a.description.toLowerCase().includes(lowerSearch) ||
-        a.category.toLowerCase().includes(lowerSearch)
-      );
+    
+    if (!auction) return res.status(404).json({ error: 'Not found' });
+    
+    let parsedImages = [];
+    try { 
+      parsedImages = JSON.parse(auction.images); 
+    } catch (e) { 
+      parsedImages = auction.images ? [auction.images] : []; 
     }
 
-    const formattedAuctions = auctions.map(auction => {
-      let parsedImages = [];
-      try {
-        parsedImages = JSON.parse(auction.images);
-      } catch (e) {
-        parsedImages = auction.images ? [auction.images] : [];
-      }
-      return {
-        ...auction,
-        images: parsedImages 
-      };
-    });
-
-    res.json(formattedAuctions);
+    res.json({ ...auction, images: parsedImages });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -84,6 +69,7 @@ router.post('/', async (req, res) => {
     
     const startTime = new Date();
     const endTime = new Date(startTime.getTime() + durationHours * 60 * 60 * 1000);
+    const finalImages = typeof images === 'string' ? images : JSON.stringify(images || []);
 
     const auction = await prisma.auction.create({
       data: {
@@ -96,10 +82,9 @@ router.post('/', async (req, res) => {
         startTime,
         endTime,
         artisanId,
-        images: JSON.stringify(images || [])
+        images: finalImages
       }
     });
-
     res.status(201).json(auction);
   } catch (error) {
     res.status(500).json({ error: error.message });
