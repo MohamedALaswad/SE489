@@ -2,8 +2,6 @@ const express = require('express');
 const router = express.Router();
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
-
-// 1. جلب جميع المزادات النشطة (مصلح ليفك مصفوفة الصور)
 router.get('/', async (req, res) => {
   try {
     const { search } = req.query;
@@ -23,7 +21,6 @@ router.get('/', async (req, res) => {
       );
     }
 
-    // تصليح حقل الصور لجميع المزادات قبل إرسالها للفرونت إند
     const formattedAuctions = auctions.map(auction => {
       let parsedImages = [];
       try {
@@ -33,7 +30,7 @@ router.get('/', async (req, res) => {
       }
       return {
         ...auction,
-        images: parsedImages // الحين صار مصفوفة حقيقية [url, url]
+        images: parsedImages 
       };
     });
 
@@ -43,7 +40,6 @@ router.get('/', async (req, res) => {
   }
 });
 
-// 2. جلب تفاصيل مزاد محدد بـ ID (مصلح ليفك مصفوفة الصور)
 router.get('/:id', async (req, res) => {
   try {
     const auction = await prisma.auction.findUnique({
@@ -56,7 +52,6 @@ router.get('/:id', async (req, res) => {
     
     if (!auction) return res.status(404).json({ error: 'Not found' });
 
-    // تصليح حقل الصور للمزاد الفردي
     let parsedImages = [];
     try {
       parsedImages = JSON.parse(auction.images);
@@ -75,7 +70,6 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// 3. إنشاء مزاد جديد (سليم كما هو)
 router.post('/', async (req, res) => {
   try {
     const { title, description, category, startingPrice, durationHours, artisanId, images } = req.body;
