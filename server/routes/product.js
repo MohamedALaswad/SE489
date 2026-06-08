@@ -101,8 +101,8 @@ router.post('/', async (req, res) => {
         name,
         description,
         category,
-        price: parseFloat(price) || 0.0,
-        stock: parseInt(stock) || 1,
+        price: parseFloat(price),
+        stock: parseInt(stock),
         images: finalImages,
         artisanId
       }
