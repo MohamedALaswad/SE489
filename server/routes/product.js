@@ -10,6 +10,7 @@ router.get('/', async (req, res) => {
     
     if (category) where.category = category;
     if (artisanId) where.artisanId = artisanId; 
+    
     let products = await prisma.product.findMany({
       where,
       include: { artisan: { select: { name: true, profile: true } } },
@@ -24,7 +25,13 @@ router.get('/', async (req, res) => {
       );
     }
 
-    res.json(products);
+    const formattedProducts = products.map(p => {
+      let parsedImages = [];
+      try { parsedImages = JSON.parse(p.images); } catch (e) { parsedImages = p.images ? [p.images] : []; }
+      return { ...p, images: parsedImages };
+    });
+
+    res.json(formattedProducts);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -38,7 +45,14 @@ router.get('/artisan/:artisanId', async (req, res) => {
       include: { artisan: { select: { name: true, profile: true } } },
       orderBy: { createdAt: 'desc' }
     });
-    res.json(products);
+
+    const formattedProducts = products.map(p => {
+      let parsedImages = [];
+      try { parsedImages = JSON.parse(p.images); } catch (e) { parsedImages = p.images ? [p.images] : []; }
+      return { ...p, images: parsedImages };
+    });
+
+    res.json(formattedProducts);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -54,7 +68,11 @@ router.get('/:id', async (req, res) => {
         reviews: { include: { user: { select: { name: true } } } } 
       }
     });
-    res.json(product);
+
+    let parsedImages = [];
+    try { parsedImages = JSON.parse(product.images); } catch (e) { parsedImages = product.images ? [product.images] : []; }
+    
+    res.json({ ...product, images: parsedImages });
   } catch (error) {
     if (error.code === 'P2025') return res.status(404).json({ error: 'Not found' });
     res.status(500).json({ error: error.message });
@@ -68,16 +86,16 @@ router.post('/', async (req, res) => {
     const finalImages = typeof images === 'string' ? images : JSON.stringify(images || []);
 
     const product = await prisma.product.create({
-  data: {
-    name,
-    description,
-    price: parseFloat(price), 
-    stock: parseInt(stock) || 1, 
-    category,
-    images,
-    artisanId
-  }
-});
+      data: {
+        name,
+        description,
+        category,
+        price: parseFloat(price) || 0.0, 
+        stock: parseInt(stock) || 1,   
+        images: finalImages,
+        artisanId
+      }
+    });
     res.status(201).json(product);
   } catch (error) {
     res.status(500).json({ error: error.message });
