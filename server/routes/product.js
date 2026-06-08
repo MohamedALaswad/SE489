@@ -27,7 +27,11 @@ router.get('/', async (req, res) => {
 
     const formattedProducts = products.map(p => {
       let parsedImages = [];
-      try { parsedImages = JSON.parse(p.images); } catch (e) { parsedImages = p.images ? [p.images] : []; }
+      try { 
+        parsedImages = JSON.parse(p.images); 
+      } catch (e) { 
+        parsedImages = p.images ? [p.images] : []; 
+      }
       return { ...p, images: parsedImages };
     });
 
@@ -48,7 +52,11 @@ router.get('/artisan/:artisanId', async (req, res) => {
 
     const formattedProducts = products.map(p => {
       let parsedImages = [];
-      try { parsedImages = JSON.parse(p.images); } catch (e) { parsedImages = p.images ? [p.images] : []; }
+      try { 
+        parsedImages = JSON.parse(p.images); 
+      } catch (e) { 
+        parsedImages = p.images ? [p.images] : []; 
+      }
       return { ...p, images: parsedImages };
     });
 
@@ -70,7 +78,11 @@ router.get('/:id', async (req, res) => {
     });
 
     let parsedImages = [];
-    try { parsedImages = JSON.parse(product.images); } catch (e) { parsedImages = product.images ? [product.images] : []; }
+    try { 
+      parsedImages = JSON.parse(product.images); 
+    } catch (e) { 
+      parsedImages = product.images ? [product.images] : []; 
+    }
     
     res.json({ ...product, images: parsedImages });
   } catch (error) {
@@ -82,7 +94,6 @@ router.get('/:id', async (req, res) => {
 router.post('/', async (req, res) => {
   try {
     const { name, description, category, price, stock, images, artisanId } = req.body;
-    
     const finalImages = typeof images === 'string' ? images : JSON.stringify(images || []);
 
     const product = await prisma.product.create({
@@ -90,8 +101,8 @@ router.post('/', async (req, res) => {
         name,
         description,
         category,
-        price: parseFloat(price) || 0.0, 
-        stock: parseInt(stock) || 1,   
+        price: parseFloat(price) || 0.0,
+        stock: parseInt(stock) || 1,
         images: finalImages,
         artisanId
       }
