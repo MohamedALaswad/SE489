@@ -68,16 +68,16 @@ router.post('/', async (req, res) => {
     const finalImages = typeof images === 'string' ? images : JSON.stringify(images || []);
 
     const product = await prisma.product.create({
-      data: {
-        name,
-        description,
-        category,
-        price: parseFloat(price),
-        stock: parseInt(stock),
-        images: finalImages,
-        artisanId
-      }
-    });
+  data: {
+    name,
+    description,
+    price: parseFloat(price), 
+    stock: parseInt(stock) || 1, 
+    category,
+    images,
+    artisanId
+  }
+});
     res.status(201).json(product);
   } catch (error) {
     res.status(500).json({ error: error.message });
