@@ -30,22 +30,61 @@ router.post('/:userId/add', async (req, res) => {
     const reqQty = quantity || 1;
     
     const product = await prisma.product.findUnique({ where: { id: productId } });
-    if (!product || product.stock < reqQty) {
-      return res.status(400).json({ error: 'Not enough stock available' });
-    }
+    if (!product) return res.status(404).json({ error: 'Product not found' });
 
     let cart = await prisma.cart.findUnique({ where: { userId: req.params.userId } });
     if (!cart) {
       cart = await prisma.cart.create({ data: { userId: req.params.userId } });
     }
 
-    await prisma.cartItem.upsert({
+    const existingItem = await prisma.cartItem.findUnique({
+      where: { cartId_productId: { cartId: cart.id, productId } }
+    });
+
+    const currentQtyInCart = existingItem ? existingItem.quantity : 0;
+
+    if (product.stock < (currentQtyInCart + reqQty)) {
+      return res.status(400).json({ error: `عذراً، المخزون المتوفر لا يكفي. المتبقي: ${product.stock}` });
+    }
+
+    const updatedItem = await prisma.cartItem.upsert({
       where: { cartId_productId: { cartId: cart.id, productId } },
       update: { quantity: { increment: reqQty } },
       create: { cartId: cart.id, productId, quantity: reqQty }
     });
 
-    res.status(200).json({ message: 'Added to cart' });
+    res.status(200).json({ message: 'Added/Increased successfully', item: updatedItem });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.post('/:userId/decrease', async (req, res) => {
+  try {
+    const { productId } = req.body;
+
+    const cart = await prisma.cart.findUnique({ where: { userId: req.params.userId } });
+    if (!cart) return res.status(404).json({ error: 'Cart not found' });
+
+    const cartItem = await prisma.cartItem.findUnique({
+      where: { cartId_productId: { cartId: cart.id, productId } }
+    });
+
+    if (!cartItem) return res.status(404).json({ error: 'Item not found in cart' });
+
+    if (cartItem.quantity <= 1) {
+      await prisma.cartItem.delete({
+        where: { cartId_productId: { cartId: cart.id, productId } }
+      });
+      return res.status(200).json({ message: 'Item removed from cart entirely' });
+    }
+
+    const updatedItem = await prisma.cartItem.update({
+      where: { cartId_productId: { cartId: cart.id, productId } },
+      data: { quantity: { decrement: 1 } }
+    });
+
+    res.status(200).json({ message: 'Quantity decreased successfully', item: updatedItem });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -55,12 +94,6 @@ router.delete('/:userId/remove/:productId', async (req, res) => {
   try {
     const cart = await prisma.cart.findUnique({ where: { userId: req.params.userId } });
     if (!cart) return res.status(404).json({ error: 'Cart not found' });
-
-    const cartItem = await prisma.cartItem.findUnique({
-      where: { cartId_productId: { cartId: cart.id, productId: req.params.productId } }
-    });
-
-    if (!cartItem) return res.status(404).json({ error: 'Item not in cart' });
 
     await prisma.cartItem.delete({
       where: { cartId_productId: { cartId: cart.id, productId: req.params.productId } }
